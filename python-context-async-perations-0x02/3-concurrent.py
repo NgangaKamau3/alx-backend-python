@@ -93,7 +93,7 @@ async def async_fetch_older_users():
 			print(f"❌ An error occurred while fetching users: {e}")
 			raise
 	
-async def fetch_concurretly():
+async def fetch_concurrently():
 	"""
 	Execute both database queries concurrently using asyncio.gather()
 	Returns:
