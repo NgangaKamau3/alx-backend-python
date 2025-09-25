@@ -26,7 +26,7 @@ urlpatterns = [
     # Include nested router URLs for conversation messages
     path('', include(conversations_router.urls)),
     # Optional: Add DRF's browsable API authentication
-    # path('api-auth/', include('rest_framework.urls')),
+    path('api/', include('rest_framework.urls')),
 ]
 
 # Optional: Add API versioning
