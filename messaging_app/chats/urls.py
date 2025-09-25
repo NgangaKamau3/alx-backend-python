@@ -8,6 +8,9 @@ router.register(r'users', UserViewSet, basename='user')
 router.register(r'conversations', ConversationViewSet, basename='conversation')
 router.register(r'auth', AuthViewSet, basename='auth')
 
+
+
+
 # Create nested router for messages under conversations
 # This allows URLs like: /conversations/1/messages/
 conversations_router = routers.NestedDefaultRouter(
