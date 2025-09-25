@@ -20,3 +20,33 @@ class Userserializer(serializers.ModelSerializer):
 			last_name = validated_data['last_name', ''],
 			phone_number = validated_data['phone_number', '']
 		)
+		return user
+class LoginSerializer(serializers.Serializer):
+	email = serializers.EmailField()
+	password = serializers.CharField()
+
+	def validate(self, data):
+		user = authenticate(**data)
+		if user and user.is_active:
+			return user
+		raise serializers.ValidationError("Invalid Credentials")
+
+class ConversationSerializer(serializers.ModelSerializer):
+	participants = Userserializer(many=True, read_only=True)
+	
+	class Meta:
+		model = Conversation
+		fields = ['conversation_id', 'name', 'participants', 'created_at']
+
+class MessageSerializer(serializers.ModelSerializer):
+	sender = Userserializer(read_only=True)
+	
+	class Meta:
+		model = Message
+		fields = ['message_id', 'message_body', 'sent_at', 'sender', 'conversation']
+		extra_kwargs = {'conversation': {'write_only': True}}
+	
+	def validate_message_body(self, value):
+		if not value.strip():
+			raise serializers.ValidationError("Message body cannot be empty.")
+		return value
