@@ -91,7 +91,7 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             return mock_response
 
         cls.mock_get.side_effect = side_effect
-     
+
     @classmethod
     def tearDownClass(cls):
         """Tear down class by stopping the patcher."""
