@@ -78,7 +78,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
         """Set up class by mocking requests.get with fixture payloads."""
         cls.get_patcher = patch('requests.get')
         cls.mock_get = cls.get_patcher.start()
-        
         def side_effect(url):
             """Return appropriate mock response based on URL."""
             mock_response = Mock()
@@ -91,7 +90,6 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
             return mock_response
         
         cls.mock_get.side_effect = side_effect
-
     @classmethod
     def tearDownClass(cls):
         """Tear down class by stopping the patcher."""
