@@ -77,11 +77,20 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def setUpClass(cls):
         """Set up class by mocking requests.get with fixture payloads."""
         cls.get_patcher = patch('requests.get')
-        mock_get = cls.get_patcher.start()
-        mock_get.return_value = Mock(json=lambda: None)
-        mock_get.return_value.json.side_effect = [
-            cls.org_payload, cls.repos_payload
-        ]
+        cls.mock_get = cls.get_patcher.start()
+        
+        def side_effect(url):
+            """Return appropriate mock response based on URL."""
+            mock_response = Mock()
+            if url == "https://api.github.com/orgs/google":
+                mock_response.json.return_value = cls.org_payload
+            elif url == cls.org_payload.get("repos_url"):
+                mock_response.json.return_value = cls.repos_payload
+            else:
+                mock_response.json.return_value = None
+            return mock_response
+        
+        cls.mock_get.side_effect = side_effect
 
     @classmethod
     def tearDownClass(cls):
@@ -90,11 +99,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
     def test_public_repos(self):
         """Test public_repos returns expected repos from fixtures."""
-        # client = GithubOrgClient("test_org")
-        # self.assertEqual(client.public_repos(), self.expected_repos)
+        client = GithubOrgClient("google")
+        self.assertEqual(client.public_repos(), self.expected_repos)
 
     def test_public_repos_with_license(self):
         """Test public_repos with apache-2.0 license returns expected repos."""
-        # client = GithubOrgClient("test_org")
-        # self.assertEqual(client.public_repos(license="apache-2.0"),
-        #                  self.apache2_repos)
+        client = GithubOrgClient("google")
+        self.assertEqual(client.public_repos(license="apache-2.0"),
+                         self.apache2_repos)
